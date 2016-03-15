@@ -1,0 +1,3 @@
+Accuracy = 0.5823
+Precision = 0.5415
+Recall = 0.5419

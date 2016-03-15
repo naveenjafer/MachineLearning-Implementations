@@ -1,0 +1,16 @@
+data = csvread('OnlineNewsPopularity.csv', 1, 2);
+%data = data(randsample(1:length(data), length(data)), :);
+train = data(1:27750, 1:58);
+test = data(27751:39644, 1:58);
+label = data(1:27750, 59);
+label = classification(label);
+test_target = data(27751:39644, 59)
+test_target = classification(test_target);
+tree = ClassificationTree.fit(train,label);
+[~,~,~,bestlevel] = cvLoss(tree,'SubTrees','All')
+tree_prune = prune(tree, 'Level', bestlevel)
+prediction = predict(tree_prune, test);
+accuracy = cal_accuracy(prediction, test_target);
+precision = cal_precision(prediction, test_target);
+recall = cal_recall(prediction, test_target);
+dlmwrite('output.txt',prediction);

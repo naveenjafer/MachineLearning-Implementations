@@ -1,0 +1,45 @@
+data=xlsread('ml.xlsx');
+%data=data(randsample(1:length(data),length(data)),:);
+train=data(1:27750,2:59);
+test=data(27751:39644,2:59);
+target=data(1:27750,60);
+for i=1:length(target)
+if(target([i])>1400)
+target([i])=1;
+else
+target([i])=0;
+end
+end
+NBModel = fitNaiveBayes(train,target);
+%if using older version please use 'NaiveBayesfit(train,target)'
+output=predict(NBModel,test);
+targettest=data(27751:39644,60);
+for i=1:length(targettest)
+if(targettest([i])>1400)
+targettest([i])=1;
+else
+targettest([i])=0;
+end
+end
+
+tp=0;
+tn=0;
+fp=0;
+fn=0;
+
+for i=1:length(targettest)
+if(output(i)==1 && targettest(i)==1)
+tp=tp+1;
+elseif(output(i)==0 && targettest(i)==1)
+fp=fp+1;
+elseif(output(i)==0 && targettest(i)==0)
+tn=tn+1;
+elseif(output(i)==1 && targettest(i)==0)
+fn=fn+1;
+end
+end
+
+precision=(tp/(tp+fp));
+accuracy=((tp+tn)/(tp+tn+fp+fn));
+recall=(tp/(tp+fn));
+dlmwrite('predictionresult.txt');
